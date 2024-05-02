@@ -21,6 +21,11 @@ impl Character {
     }
 
     pub(crate) fn deal_damage(&self, defender: &mut Character, damage: i32) {
+        let damage = if defender.level >= self.level + 5 {
+            damage / 2
+        } else {
+            damage
+        };
         defender.health -= damage;
         if defender.health <= 0 {
             defender.alive = false;
@@ -67,6 +72,15 @@ mod tests {
             assert_eq!(other_character.alive, false);
         }
 
+        #[test]
+        fn when_dealing_damage_to_target_with_level_5_or_more_above_the_attacker_the_damage_is_reduced_by_50_percent() {
+            let attacker = setup();
+            let mut target = setup();
+            target.level = attacker.level + 5;
+            attacker.deal_damage(&mut target, 100);
+            assert_eq!(target.health, 950);
+        }
+
         //region This test is not needed because a character cannot deal damage to itself due to the borrow checker
         //  this code is kept for further discussion
         // #[test]
@@ -88,7 +102,7 @@ mod tests {
             let character = setup();
             let mut other_character = setup();
             character.deal_damage(&mut other_character, 200);
-            other_character.heal( 100);
+            other_character.heal(100);
             assert_eq!(other_character.health, 900);
         }
 
@@ -97,7 +111,7 @@ mod tests {
             let character = setup();
             let mut other_character = setup();
             character.deal_damage(&mut other_character, 1000);
-            other_character.heal( 100);
+            other_character.heal(100);
             assert_eq!(other_character.health, 0);
         }
 
@@ -106,7 +120,7 @@ mod tests {
             let character = setup();
             let mut other_character = setup();
             character.deal_damage(&mut other_character, 10);
-            other_character.heal( 100);
+            other_character.heal(100);
             assert_eq!(other_character.health, 1000);
         }
 
