@@ -21,10 +21,16 @@ impl Character {
     }
 
     pub(crate) fn deal_damage(&self, defender: &mut Character, damage: i32) {
-    let actual_damage = if defender.level >= self.level + 5 { damage / 2 } else { damage };
-    defender.health -= actual_damage;
-    defender.alive = defender.health > 0;
-}
+        let actual_damage = if defender.level >= self.level + 5 {
+            damage / 2
+        } else if self.level >= defender.level + 5 {
+            damage + damage / 2
+        } else {
+            damage
+        };
+        defender.health -= actual_damage;
+        defender.alive = defender.health > 0;
+    }
 }
 
 #[cfg(test)]
@@ -73,6 +79,15 @@ mod tests {
             target.level = attacker.level + 5;
             attacker.deal_damage(&mut target, 100);
             assert_eq!(target.health, 950);
+        }
+
+        #[test]
+        fn when_dealing_damage_to_target_with_5_or_more_levels_below_the_attacker_the_damage_is_increased_by_50_percent() {
+            let mut attacker = setup();
+            let mut target = setup();
+            attacker.level = target.level + 5;
+            attacker.deal_damage(&mut target, 100);
+            assert_eq!(target.health, 850);
         }
 
         //region This test is not needed because a character cannot deal damage to itself due to the borrow checker
