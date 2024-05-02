@@ -12,18 +12,14 @@ impl Character {
             alive: true,
         }
     }
-}
 
-impl Character {
     pub(crate) fn heal(&self, healed: &mut Character, health: i32) {
-        if !healed.alive || healed.health == 1000 {
+        if !healed.alive {
             return;
         }
         healed.health = (healed.health + health).min(1000);
     }
-}
 
-impl Character {
     pub(crate) fn deal_damage(&self, defender: &mut Character, damage: i32) {
         defender.health -= damage;
         if defender.health <= 0 {
