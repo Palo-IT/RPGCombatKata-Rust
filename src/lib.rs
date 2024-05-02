@@ -21,12 +21,11 @@ impl Character {
     }
 
     pub(crate) fn deal_damage(&self, defender: &mut Character, damage: i32) {
-        let actual_damage = if defender.level >= self.level + 5 {
-            damage / 2
-        } else if self.level >= defender.level + 5 {
-            damage + damage / 2
-        } else {
-            damage
+        let level_difference = self.level - defender.level;
+        let actual_damage = match level_difference {
+            d if d >= 5 => damage + damage / 2,
+            d if d <= -5 => damage / 2,
+            _ => damage,
         };
         defender.health -= actual_damage;
         defender.alive = defender.health > 0;
