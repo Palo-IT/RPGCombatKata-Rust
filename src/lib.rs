@@ -7,6 +7,9 @@ struct Character {
 impl Character {
     pub(crate) fn deal_damage(&self, defender: &mut Character, damage: i32) {
         defender.health -= damage;
+        if defender.health <= 0 {
+            defender.alive = false;
+        }
     }
 }
 
@@ -38,5 +41,13 @@ mod tests {
         let mut other_character = Character::new();
         character.deal_damage(&mut other_character, 100);
         assert_eq!(other_character.health, 900);
+    }
+
+    #[test]
+    fn when_character_health_is_0_or_less_the_character_is_dead() {
+        let character = Character::new();
+        let mut other_character = Character::new();
+        character.deal_damage(&mut other_character, 1000);
+        assert_eq!(other_character.alive, false);
     }
 }
