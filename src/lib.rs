@@ -32,12 +32,16 @@ impl Character {
 mod tests {
     use super::*;
 
+    fn setup() -> Character {
+        Character::new()
+    }
+
     mod character_creation {
         use super::*;
 
         #[test]
         fn created_character_has_by_default_1000_health_1_level_and_true_alive() {
-            let character = Character::new();
+            let character = setup();
             assert_eq!(character.health, 1000);
             assert_eq!(character.level, 1);
             assert_eq!(character.alive, true);
@@ -49,16 +53,16 @@ mod tests {
 
         #[test]
         fn when_a_character_deals_100_damage_to_another_character_the_health_of_the_other_character_is_reduced_by_100() {
-            let character = Character::new();
-            let mut other_character = Character::new();
+            let character = setup();
+            let mut other_character = setup();
             character.deal_damage(&mut other_character, 100);
             assert_eq!(other_character.health, 900);
         }
 
         #[test]
         fn when_character_health_is_0_or_less_the_character_is_dead() {
-            let character = Character::new();
-            let mut other_character = Character::new();
+            let character = setup();
+            let mut other_character = setup();
             character.deal_damage(&mut other_character, 1000);
             assert_eq!(other_character.alive, false);
         }
@@ -69,8 +73,8 @@ mod tests {
 
         #[test]
         fn when_a_character_heals_100_health_to_another_character_the_health_of_the_other_character_is_increased_by_100() {
-            let character = Character::new();
-            let mut other_character = Character::new();
+            let character = setup();
+            let mut other_character = setup();
             character.deal_damage(&mut other_character, 200);
             character.heal(&mut other_character, 100);
             assert_eq!(other_character.health, 900);
@@ -78,8 +82,8 @@ mod tests {
 
         #[test]
         fn dead_character_cannot_be_healed() {
-            let character = Character::new();
-            let mut other_character = Character::new();
+            let character = setup();
+            let mut other_character = setup();
             character.deal_damage(&mut other_character, 1000);
             character.heal(&mut other_character, 100);
             assert_eq!(other_character.health, 0);
@@ -87,8 +91,8 @@ mod tests {
 
         #[test]
         fn healing_cannot_increase_health_above_1000() {
-            let character = Character::new();
-            let mut other_character = Character::new();
+            let character = setup();
+            let mut other_character = setup();
             character.deal_damage(&mut other_character, 10);
             character.heal(&mut other_character, 100);
             assert_eq!(other_character.health, 1000);
