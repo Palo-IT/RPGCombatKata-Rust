@@ -13,11 +13,11 @@ impl Character {
         }
     }
 
-    pub(crate) fn heal(&self, healed: &mut Character, health: i32) {
-        if !healed.alive {
+    pub(crate) fn heal(&mut self, health: i32) {
+        if !self.alive {
             return;
         }
-        healed.health = (healed.health + health).min(1000);
+        self.health = (self.health + health).min(1000);
     }
 
     pub(crate) fn deal_damage(&self, defender: &mut Character, damage: i32) {
@@ -66,6 +66,18 @@ mod tests {
             character.deal_damage(&mut other_character, 1000);
             assert_eq!(other_character.alive, false);
         }
+
+        //region This test is not needed because a character cannot deal damage to itself due to the borrow checker
+        //  this code is kept for further discussion
+        // #[test]
+        // fn a_character_cannot_deal_damage_to_itself() {
+        //     let mut character = setup();
+        //     let mut other_character = setup();
+        //     character.deal_damage(&mut other_character, 100);
+        //     character.deal_damage(&mut character, 100);
+        //     assert_eq!(character.health, 1000);
+        // }
+        //endregion
     }
 
     mod character_can_heal_a_character {
@@ -76,7 +88,7 @@ mod tests {
             let character = setup();
             let mut other_character = setup();
             character.deal_damage(&mut other_character, 200);
-            character.heal(&mut other_character, 100);
+            other_character.heal( 100);
             assert_eq!(other_character.health, 900);
         }
 
@@ -85,7 +97,7 @@ mod tests {
             let character = setup();
             let mut other_character = setup();
             character.deal_damage(&mut other_character, 1000);
-            character.heal(&mut other_character, 100);
+            other_character.heal( 100);
             assert_eq!(other_character.health, 0);
         }
 
@@ -94,8 +106,19 @@ mod tests {
             let character = setup();
             let mut other_character = setup();
             character.deal_damage(&mut other_character, 10);
-            character.heal(&mut other_character, 100);
+            other_character.heal( 100);
             assert_eq!(other_character.health, 1000);
         }
+
+        //region This will become useless as the `healed` parameter is removed from the heal function
+        // #[test]
+        // fn a_character_can_only_heal_itself() {
+        //     let character = setup();
+        //     let mut other_character = setup();
+        //     character.deal_damage(&mut other_character, 200);
+        //     other_character.heal(&mut other_character, 100);
+        //     assert_eq!(other_character.health, 900);
+        // }
+        //endregion
     }
 }
