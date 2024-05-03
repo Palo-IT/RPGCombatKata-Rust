@@ -31,7 +31,7 @@ impl Character {
         self.health = (self.health + health).min(1000);
     }
 
-    pub(crate) fn deal_damage(&self, defender: &mut Character, damage: i32) {
+    pub(crate) fn deal_damage(&self, defender: &mut Character, damage: i32, distance: i32) {
         let level_difference = self.level - defender.level;
         let actual_damage = match level_difference {
             d if d >= 5 => damage + damage / 2,
@@ -84,7 +84,7 @@ mod tests {
         ) {
             let character = setup();
             let mut other_character = setup();
-            character.deal_damage(&mut other_character, 100);
+            character.deal_damage(&mut other_character, 100, 0);
             assert_eq!(other_character.health, 900);
         }
 
@@ -92,7 +92,7 @@ mod tests {
         fn when_character_health_is_0_or_less_the_character_is_dead() {
             let character = setup();
             let mut other_character = setup();
-            character.deal_damage(&mut other_character, 1000);
+            character.deal_damage(&mut other_character, 1000, 0);
             assert_eq!(other_character.alive, false);
         }
 
@@ -102,7 +102,7 @@ mod tests {
             let attacker = setup();
             let mut target = setup();
             target.level = attacker.level + 5;
-            attacker.deal_damage(&mut target, 100);
+            attacker.deal_damage(&mut target, 100, 0);
             assert_eq!(target.health, 950);
         }
 
@@ -112,7 +112,7 @@ mod tests {
             let mut attacker = setup();
             let mut target = setup();
             attacker.level = target.level + 5;
-            attacker.deal_damage(&mut target, 100);
+            attacker.deal_damage(&mut target, 100, 0);
             assert_eq!(target.health, 850);
         }
 
@@ -137,7 +137,7 @@ mod tests {
         ) {
             let character = setup();
             let mut other_character = setup();
-            character.deal_damage(&mut other_character, 200);
+            character.deal_damage(&mut other_character, 200, 0);
             other_character.heal(100);
             assert_eq!(other_character.health, 900);
         }
@@ -146,7 +146,7 @@ mod tests {
         fn dead_character_cannot_be_healed() {
             let character = setup();
             let mut other_character = setup();
-            character.deal_damage(&mut other_character, 1000);
+            character.deal_damage(&mut other_character, 1000, 0);
             other_character.heal(100);
             assert_eq!(other_character.health, 0);
         }
@@ -155,7 +155,7 @@ mod tests {
         fn healing_cannot_increase_health_above_1000() {
             let character = setup();
             let mut other_character = setup();
-            character.deal_damage(&mut other_character, 10);
+            character.deal_damage(&mut other_character, 10, 0);
             other_character.heal(100);
             assert_eq!(other_character.health, 1000);
         }
