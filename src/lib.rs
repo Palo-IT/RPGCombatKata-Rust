@@ -11,12 +11,16 @@ struct Character {
 }
 
 impl Character {
-    fn new() -> Self {
+    fn new(fighter_type: FighterType) -> Self {
+        let max_range = match fighter_type {
+            FighterType::Melee => 2,
+            FighterType::Ranged => 20,
+        };
         Self {
             health: 1000,
             level: 1,
             alive: true,
-            max_range: 2,
+            max_range,
         }
     }
 
@@ -44,7 +48,7 @@ mod tests {
     use super::*;
 
     fn setup() -> Character {
-        Character::new()
+        Character::new(FighterType::Melee)
     }
 
     mod character_creation {
@@ -57,6 +61,18 @@ mod tests {
             assert_eq!(character.level, 1);
             assert_eq!(character.alive, true);
             assert_eq!(character.max_range, 2);
+        }
+
+        #[test]
+        fn character_initialized_as_melee_fighter_has_max_range_of_2() {
+            let character = Character::new(FighterType::Melee);
+            assert_eq!(character.max_range, 2);
+        }
+
+        #[test]
+        fn character_initialized_as_range_fighter_has_max_range_of_20() {
+            let character = Character::new(FighterType::Ranged);
+            assert_eq!(character.max_range, 20);
         }
     }
 
