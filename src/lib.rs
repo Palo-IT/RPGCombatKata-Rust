@@ -1,7 +1,13 @@
+enum FighterType {
+    Melee,
+    Ranged,
+}
+
 struct Character {
     health: i32,
     level: i32,
     alive: bool,
+    max_range: i32,
 }
 
 impl Character {
@@ -10,6 +16,7 @@ impl Character {
             health: 1000,
             level: 1,
             alive: true,
+            max_range: 2,
         }
     }
 
@@ -49,6 +56,7 @@ mod tests {
             assert_eq!(character.health, 1000);
             assert_eq!(character.level, 1);
             assert_eq!(character.alive, true);
+            assert_eq!(character.max_range, 2);
         }
     }
 
@@ -56,7 +64,8 @@ mod tests {
         use super::*;
 
         #[test]
-        fn when_a_character_deals_100_damage_to_another_character_the_health_of_the_other_character_is_reduced_by_100() {
+        fn when_a_character_deals_100_damage_to_another_character_the_health_of_the_other_character_is_reduced_by_100(
+        ) {
             let character = setup();
             let mut other_character = setup();
             character.deal_damage(&mut other_character, 100);
@@ -72,7 +81,8 @@ mod tests {
         }
 
         #[test]
-        fn when_dealing_damage_to_target_with_level_5_or_more_above_the_attacker_the_damage_is_reduced_by_50_percent() {
+        fn when_dealing_damage_to_target_with_level_5_or_more_above_the_attacker_the_damage_is_reduced_by_50_percent(
+        ) {
             let attacker = setup();
             let mut target = setup();
             target.level = attacker.level + 5;
@@ -81,7 +91,8 @@ mod tests {
         }
 
         #[test]
-        fn when_dealing_damage_to_target_with_5_or_more_levels_below_the_attacker_the_damage_is_increased_by_50_percent() {
+        fn when_dealing_damage_to_target_with_5_or_more_levels_below_the_attacker_the_damage_is_increased_by_50_percent(
+        ) {
             let mut attacker = setup();
             let mut target = setup();
             attacker.level = target.level + 5;
@@ -106,7 +117,8 @@ mod tests {
         use super::*;
 
         #[test]
-        fn when_a_character_heals_100_health_to_another_character_the_health_of_the_other_character_is_increased_by_100() {
+        fn when_a_character_heals_100_health_to_another_character_the_health_of_the_other_character_is_increased_by_100(
+        ) {
             let character = setup();
             let mut other_character = setup();
             character.deal_damage(&mut other_character, 200);
